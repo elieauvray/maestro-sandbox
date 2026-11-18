@@ -1,34 +1,5 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TicTacToe</title>
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <main>
-      <h1>TicTacToe</h1>
-    </main>
-  </body>
-      <p id="status" class="status">X to play</p>
-      <div id="board" class="board">
-        <button type="button" class="cell" data-index="0"></button>
-        <button type="button" class="cell" data-index="1"></button>
-        <button type="button" class="cell" data-index="2"></button>
-        <button type="button" class="cell" data-index="3"></button>
-        <button type="button" class="cell" data-index="4"></button>
-        <button type="button" class="cell" data-index="5"></button>
-        <button type="button" class="cell" data-index="6"></button>
-        <button type="button" class="cell" data-index="7"></button>
-        <button type="button" class="cell" data-index="8"></button>
-      </div>
-      <button id="restart" class="button" type="button">Restart</button>
-    </main>
-    <script type="module" src="js/app.js"></script>
-  </body>
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,27 +12,48 @@
   </header>
 
   <main class="game">
-    <p id="status" class="status" aria-live="polite">X to play</p>
+    <p id="status" class="status" role="status" aria-live="polite">X to play</p>
 
     <div id="board" class="board">
-      <button type="button" class="cell" aria-label="Row 1, column 1, empty"></button>
-      <button type="button" class="cell" aria-label="Row 1, column 2, empty"></button>
-      <button type="button" class="cell" aria-label="Row 1, column 3, empty"></button>
-      <button type="button" class="cell" aria-label="Row 2, column 1, empty"></button>
-      <button type="button" class="cell" aria-label="Row 2, column 2, empty"></button>
-      <button type="button" class="cell" aria-label="Row 2, column 3, empty"></button>
-      <button type="button" class="cell" aria-label="Row 3, column 1, empty"></button>
-      <button type="button" class="cell" aria-label="Row 3, column 2, empty"></button>
-      <button type="button" class="cell" aria-label="Row 3, column 3, empty"></button>
+      <button type="button" class="cell" data-index="0" aria-label="Row 1, column 1, empty"></button>
+      <button type="button" class="cell" data-index="1" aria-label="Row 1, column 2, empty"></button>
+      <button type="button" class="cell" data-index="2" aria-label="Row 1, column 3, empty"></button>
+      <button type="button" class="cell" data-index="3" aria-label="Row 2, column 1, empty"></button>
+      <button type="button" class="cell" data-index="4" aria-label="Row 2, column 2, empty"></button>
+      <button type="button" class="cell" data-index="5" aria-label="Row 2, column 3, empty"></button>
+      <button type="button" class="cell" data-index="6" aria-label="Row 3, column 1, empty"></button>
+      <button type="button" class="cell" data-index="7" aria-label="Row 3, column 2, empty"></button>
+      <button type="button" class="cell" data-index="8" aria-label="Row 3, column 3, empty"></button>
     </div>
 
     <div class="controls">
       <button type="button" id="restart" class="button">Restart</button>
     </div>
+
+    <section class="scoreboard" aria-labelledby="scoreboard-title">
+      <h2 id="scoreboard-title">Score</h2>
+      <dl class="scores">
+        <div class="score">
+          <dt>X wins</dt>
+          <dd id="score-x">0</dd>
+        </div>
+        <div class="score">
+          <dt>O wins</dt>
+          <dd id="score-o">0</dd>
+        </div>
+        <div class="score">
+          <dt>Draws</dt>
+          <dd id="score-draws">0</dd>
+        </div>
+      </dl>
+      <button type="button" id="reset-scores" class="button">Reset scores</button>
+    </section>
   </main>
 
   <footer class="site-footer">
     <p>Built for Upsun. Two players, one device.</p>
   </footer>
+
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

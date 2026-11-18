@@ -7,6 +7,11 @@ import {
   getWinner,
   isGameOver,
   getStatus,
+  getWinningLine,
+  createScores,
+  recordResult,
+  resetScores,
+  normalizeScores,
 } from '../public/js/game.js';
 
 // Play a sequence of cell indexes, starting from a new game.
@@ -141,4 +146,61 @@ test('R6: a new game after play clears the board and X plays first', () => {
   assert.equal(fresh.turn, 'X');
   assert.equal(fresh.over, false);
   assert.equal(playMove(fresh, 0).board[0], 'X');
+});
+
+test('U2: getWinningLine returns the winning cells or null', () => {
+  assert.equal(getWinningLine(newGame().board), null);
+  assert.equal(getWinningLine(play(0, 3).board), null);
+  assert.deepEqual(getWinningLine(play(0, 3, 1, 4, 2).board), [0, 1, 2]);
+  assert.deepEqual(getWinningLine(play(0, 3, 1, 4, 8, 5).board), [3, 4, 5]);
+  assert.equal(play(0, 1, 2, 4, 3, 5, 7, 6, 8).winningLine, null);
+});
+
+test('U3: new scores start at zero', () => {
+  assert.deepEqual(createScores(), { x: 0, o: 0, draws: 0 });
+});
+
+test('U3: recordResult counts X wins, O wins and draws', () => {
+  const xWin = play(0, 3, 1, 4, 2);
+  const oWin = play(0, 3, 1, 4, 8, 5);
+  const draw = play(0, 1, 2, 4, 3, 5, 7, 6, 8);
+  let scores = createScores();
+  scores = recordResult(scores, xWin);
+  assert.deepEqual(scores, { x: 1, o: 0, draws: 0 });
+  scores = recordResult(scores, oWin);
+  assert.deepEqual(scores, { x: 1, o: 1, draws: 0 });
+  scores = recordResult(scores, draw);
+  scores = recordResult(scores, draw);
+  assert.deepEqual(scores, { x: 1, o: 1, draws: 2 });
+});
+
+test('U3: recordResult ignores a game that is not over', () => {
+  const scores = { x: 2, o: 1, draws: 0 };
+  assert.deepEqual(recordResult(scores, play(0, 1)), scores);
+  assert.deepEqual(recordResult(scores, newGame()), scores);
+});
+
+test('recordResult does not mutate the previous scores', () => {
+  const before = createScores();
+  const after = recordResult(before, play(0, 3, 1, 4, 2));
+  assert.deepEqual(before, { x: 0, o: 0, draws: 0 });
+  assert.notEqual(after, before);
+});
+
+test('U4: resetScores sets all counters back to 0', () => {
+  assert.deepEqual(resetScores({ x: 3, o: 2, draws: 5 }), { x: 0, o: 0, draws: 0 });
+  assert.deepEqual(resetScores(), createScores());
+});
+
+test('U3: normalizeScores restores saved scores and rejects bad data', () => {
+  assert.deepEqual(normalizeScores({ x: 3, o: 2, draws: 1 }), { x: 3, o: 2, draws: 1 });
+  assert.deepEqual(normalizeScores(JSON.parse(JSON.stringify({ x: 1, o: 0, draws: 4 }))), {
+    x: 1,
+    o: 0,
+    draws: 4,
+  });
+  for (const bad of [null, undefined, 'x', 5, [], { x: -1, o: 1.5, draws: '2' }]) {
+    assert.deepEqual(normalizeScores(bad), { x: 0, o: 0, draws: 0 });
+  }
+  assert.deepEqual(normalizeScores({ x: 2 }), { x: 2, o: 0, draws: 0 });
 });
