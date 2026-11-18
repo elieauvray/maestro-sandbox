@@ -1,0 +1,21 @@
+applications:
+  app:
+    type: "nodejs:22"
+
+    web:
+      commands:
+        # Static site: no process to run, the locations below serve the files.
+        start: "sleep infinity"
+      locations:
+        "/":
+          root: "public"
+          index:
+            - "index.html"
+          scripts: false
+          allow: true
+          expires: 5m
+
+routes:
+  "https://{default}/":
+    type: upstream
+    upstream: "app:http"
