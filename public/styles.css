@@ -76,6 +76,10 @@ body {
   font-family: var(--font-sans);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
+  margin: 0;
+}
+
+h1 {
 }
 
 main {

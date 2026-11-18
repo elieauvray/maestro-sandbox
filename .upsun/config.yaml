@@ -1,3 +1,19 @@
+applications:
+  app:
+    type: "nodejs:22"
+
+    web:
+      commands:
+        # Static site: no process to run, the locations below serve the files.
+        start: "sleep infinity"
+      locations:
+        "/":
+          root: "public"
+          index:
+            - "index.html"
+          scripts: false
+          allow: true
+          expires: 5m
 # Intentionally minimal: TicTacToe is plain HTML, CSS and ES modules served
 # statically from public/. No build, deploy hooks, services or relationships.
 applications:
@@ -24,4 +40,5 @@ applications:
 routes:
   "https://{default}/":
     type: upstream
+    upstream: "app:http"
     upstream: "tictactoe:http"
