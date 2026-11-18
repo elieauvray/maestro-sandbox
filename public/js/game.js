@@ -58,6 +58,44 @@ export function playMove(state, index) {
   };
 }
 
+// The cells of the winning line, or null when the board has no winner.
+export function getWinningLine(board) {
+  const result = getWinner(board);
+  return result ? result.line : null;
+}
+
+// Scoreboard logic. Scores are plain objects: { x, o, draws }. All functions
+// are pure and return new objects.
+export function createScores() {
+  return { x: 0, o: 0, draws: 0 };
+}
+
+// Add one finished game to the scores. Returns the scores unchanged when the
+// game is not over.
+export function recordResult(scores, state) {
+  if (!state || !state.over) return scores;
+  if (state.winner === 'X') return { ...scores, x: scores.x + 1 };
+  if (state.winner === 'O') return { ...scores, o: scores.o + 1 };
+  if (state.draw) return { ...scores, draws: scores.draws + 1 };
+  return scores;
+}
+
+export function resetScores() {
+  return createScores();
+}
+
+// Turn untrusted data (for example parsed localStorage content) into valid
+// scores. Anything that is not a non-negative integer counts as 0.
+export function normalizeScores(value) {
+  const scores = createScores();
+  if (value === null || typeof value !== 'object') return scores;
+  for (const key of Object.keys(scores)) {
+    const count = value[key];
+    if (Number.isSafeInteger(count) && count >= 0) scores[key] = count;
+  }
+  return scores;
+}
+
 export function getStatus(state) {
   if (state.winner) return `${state.winner} wins`;
   if (state.draw) return 'Draw';
