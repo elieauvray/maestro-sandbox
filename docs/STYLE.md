@@ -131,3 +131,48 @@ The dark mode block is optional. If you use it, the winning cells keep `--color-
 ## 5. Copy
 - Sentence case, American English, no em dashes or en dashes, no ampersands.
 - Status texts: "X to play", "O to play", "X wins", "O wins", "Draw".
+
+## 6. Space battle art palette (change request C1)
+Added on 2026-11-18 for the isometric 8-bit background (docs/SPEC.md section 9). **No new colors were invented:** every art color is an existing Upsun brand value from section 1 or its dark mode line. Use these tokens in `public/styles.css` (for the panel and page) and read them from CSS in `public/js/background.js` (`getComputedStyle(document.documentElement).getPropertyValue(...)`) so that the canvas palette has a single source.
+
+| Token | Value | Brand name | Use in the scene |
+|---|---|---|---|
+| `--art-space` | `#0C0F10` | Neutral 1000 | Deep space, page background behind the canvas |
+| `--art-space-2` | `#252D31` | Neutral 800 | Nebula shading, planet shadows, dithering |
+| `--art-dim` | `#646F75` | Neutral 500 | Far stars, moon shadow side, smoke |
+| `--art-mid` | `#8B9397` | Neutral 400 | Moons, ship hulls |
+| `--art-light` | `#ECEDEE` | Neutral 100 | Near stars, highlights, missile bodies, explosion core |
+| `--art-violet` | `#6046FF` | Violet 600 | Galaxy arms, planet A, fleet A |
+| `--art-violet-light` | `#BFB5FF` | Violet 300 | Galaxy core glow, planet A highlights |
+| `--art-blue` | `#00D0EC` | Blue 600 | Fleet A lasers and engines, planet B |
+| `--art-pink` | `#E81CEC` | Pink 600 | Fleet B lasers and engines, planet ring |
+| `--art-orange` | `#FF4A11` | Orange 600 | Fleet B hulls, missile trails, explosions |
+| `--art-lime` | `#D5F800` | Lime 600 | Explosion flash, ship cockpit lights |
+
+```css
+:root {
+  /* Space battle art palette: Upsun brand values only (STYLE.md section 6) */
+  --art-space: #0C0F10;        /* Neutral 1000 */
+  --art-space-2: #252D31;      /* Neutral 800 */
+  --art-dim: #646F75;          /* Neutral 500 */
+  --art-mid: #8B9397;          /* Neutral 400 */
+  --art-light: #ECEDEE;        /* Neutral 100 */
+  --art-violet: #6046FF;       /* Violet 600 */
+  --art-violet-light: #BFB5FF; /* Violet 300 */
+  --art-blue: #00D0EC;         /* Blue 600 */
+  --art-pink: #E81CEC;         /* Pink 600 */
+  --art-orange: #FF4A11;       /* Orange 600 */
+  --art-lime: #D5F800;         /* Lime 600 */
+
+  /* 8-bit UI treatment (structural, not brand values) */
+  --pixel: 4px;                /* size of one "pixel" in UI borders and shadows */
+}
+```
+
+### Rules
+- **Isometric grid:** 2:1 pixel ratio (a tile is twice as wide as it is tall). Project world (x, y, z) to screen with `sx = (x - y) * tileW / 2`, `sy = (x + y) * tileH / 2 - z`, rounded to whole canvas pixels.
+- **Pixel art:** no anti-aliasing (`ctx.imageSmoothingEnabled = false`, CSS `image-rendering: pixelated`), integer coordinates, flat colors and checkerboard dithering for shading. No gradients or blur.
+- **Panel (8-bit UI):** the game panel uses `background: var(--color-bg)`, square corners (`border-radius: 0`), a `var(--pixel)` solid border in `--color-text` and a stepped hard shadow (for example `box-shadow: var(--pixel) var(--pixel) 0 var(--art-violet)`). Buttons may get the same stepped shadow. Text, fonts and UI contrast follow sections 1 to 5 unchanged.
+- **Brightness:** the scene stays mostly dark (`--art-space`, `--art-space-2`); bright colors are small accents (shots, explosions, highlights) so the panel stays the focus.
+- **Motion:** obey `prefers-reduced-motion` (one static frame).
+- **Not allowed:** Upsun logo, any image or font file, remote assets, colors outside this file.

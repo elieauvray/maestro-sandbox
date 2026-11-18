@@ -7,3 +7,4 @@
 - Run `node --test` and keep it green; add tests for any logic change.
 - Do not change `.upsun/config.yaml` unless the issue asks for it.
 - No external dependencies, frameworks, CDNs, remote fonts or external requests.
+- Space battle background (docs/SPEC.md section 9): keep scene logic pure in `public/js/space-scene.js` (tested in `test/space-scene.test.js`) and canvas drawing in `public/js/background.js`; use only the art palette in docs/STYLE.md section 6; generate all sprites in code, never load image or font files.
