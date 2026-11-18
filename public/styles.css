@@ -1,0 +1,244 @@
+:root {
+  /* Colors: Upsun brand, light mode */
+  --color-bg: #ECEDEE;              /* Neutral 100 */
+  --color-text: #0C0F10;            /* Neutral 1000 */
+  --color-text-secondary: #646F75;  /* Neutral 500: large text only */
+  --color-accent: #6046FF;          /* Violet 600 */
+  --color-on-accent: #ECEDEE;       /* Neutral 100 */
+  --color-emphasis: #D5F800;        /* Lime 600: always with --color-text */
+  --color-on-emphasis: #0C0F10;     /* Neutral 1000: text on Lime 600, both modes */
+  --color-border: #D8DBDC;          /* Neutral 200: decorative only */
+  --color-accent-orange: #FF4A11;   /* Orange 600: decoration only */
+  --color-accent-blue: #00D0EC;     /* Blue 600: decoration only */
+  --color-accent-pink: #E81CEC;     /* Pink 600: decoration only */
+
+  /* Typography */
+  --font-sans: "Instrument Sans", Arial, sans-serif;
+  --font-mono: "Space Grotesk", Arial, sans-serif;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-size-small: 0.875rem;  /* 14px */
+  --font-size-body: 1rem;       /* 16px = 12pt brand body */
+  --font-size-h3: 1.25rem;      /* 20px */
+  --font-size-h2: 1.5rem;       /* 24px */
+  --font-size-h1: clamp(2rem, 6vw, 3rem);
+  --font-size-mark: clamp(2.5rem, 12vw, 4rem);
+  --line-height-body: 1.2;
+  --line-height-relaxed: 1.5;
+
+  /* Shape and spacing (structural, not brand values) */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --border-width: 2px;
+  --focus-ring-width: 3px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+  --space-6: 3rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0C0F10;              /* Neutral 1000 */
+    --color-text: #ECEDEE;            /* Neutral 100 */
+    --color-text-secondary: #8B9397;  /* Neutral 400 */
+    --color-accent: #BFB5FF;          /* Violet 300 */
+    --color-on-accent: #0C0F10;       /* Neutral 1000 */
+    --color-border: #252D31;          /* Neutral 800 */
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-body);
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  text-align: center;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+}
+
+p {
+  margin: 0;
+}
+
+/* Header and footer */
+.site-header {
+  padding: var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.site-footer {
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text);
+  text-align: center;
+}
+
+/* Main container */
+.game {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.status {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent);
+  text-align: center;
+}
+
+/* Board */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  width: min(100%, 28rem, 60vh);
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+}
+
+.cell {
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: var(--border-width) solid var(--color-text);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: var(--font-size-mark);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+
+/* Hover only on empty, playable cells */
+.cell[aria-label$="empty"]:not(:disabled):hover {
+  border-color: var(--color-accent);
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+.cell.win {
+  background: var(--color-emphasis);
+  color: var(--color-on-emphasis);
+}
+
+/* Controls and buttons */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.button {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.button:hover {
+  background: var(--color-text);
+}
+
+/* Visible focus on every interactive element */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Narrow screens */
+@media (max-width: 400px) {
+  .site-header {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .game {
+    padding: var(--space-3) var(--space-2);
+    gap: var(--space-3);
+  }
+
+  .board {
+    gap: var(--space-1);
+  }
+
+  .button {
+    padding: var(--space-2) var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
