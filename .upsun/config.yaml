@@ -1,0 +1,27 @@
+# Intentionally minimal: TicTacToe is plain HTML, CSS and ES modules served
+# statically from public/. No build, deploy hooks, services or relationships.
+applications:
+  tictactoe:
+    source:
+      root: /
+    type: "nodejs:22"
+    web:
+      # Upsun has no dedicated static runtime: keep a no-op process alive and
+      # let the web server serve the files from `public/`.
+      commands:
+        start: sleep infinity
+      locations:
+        "/":
+          root: public
+          index:
+            - index.html
+          # Short cache: JS/CSS files are not fingerprinted.
+          expires: 1h
+          scripts: false
+          allow: true
+          passthru: false
+
+routes:
+  "https://{default}/":
+    type: upstream
+    upstream: "tictactoe:http"
