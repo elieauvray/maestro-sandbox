@@ -6,6 +6,7 @@
   --color-accent: #6046FF;          /* Violet 600 */
   --color-on-accent: #ECEDEE;       /* Neutral 100 */
   --color-emphasis: #D5F800;        /* Lime 600: always with --color-text */
+  --color-on-emphasis: #0C0F10;     /* Neutral 1000: text on Lime 600, both modes */
   --color-border: #D8DBDC;          /* Neutral 200: decorative only */
   --color-accent-orange: #FF4A11;   /* Orange 600: decoration only */
   --color-accent-blue: #00D0EC;     /* Blue 600: decoration only */
@@ -53,6 +54,23 @@
 
 body {
   margin: 0;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
@@ -92,6 +110,91 @@ h1 {
 .cell {
   aspect-ratio: 1;
   padding: 0;
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-body);
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  text-align: center;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+}
+
+p {
+  margin: 0;
+}
+
+/* Header and footer */
+.site-header {
+  padding: var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.site-footer {
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text);
+  text-align: center;
+}
+
+/* Main container */
+.game {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.status {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent);
+  text-align: center;
+}
+
+/* Board */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  width: min(100%, 28rem, 60vh);
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+}
+
+.cell {
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--color-bg);
   color: var(--color-text);
   border: var(--border-width) solid var(--color-text);
@@ -110,6 +213,34 @@ h1 {
 
 .cell--playable:hover {
   border-color: var(--color-accent);
+  font: inherit;
+  font-size: var(--font-size-mark);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+
+/* Hover only on empty, playable cells */
+.cell[aria-label$="empty"]:not(:disabled):hover {
+  border-color: var(--color-accent);
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+.cell.win {
+  background: var(--color-emphasis);
+  color: var(--color-on-emphasis);
+}
+
+/* Controls and buttons */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
 }
 
 .button {
@@ -123,6 +254,10 @@ h1 {
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: background-color 150ms;
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .button:hover {
@@ -131,6 +266,8 @@ h1 {
 
 .cell:focus-visible,
 .button:focus-visible {
+/* Visible focus on every interactive element */
+:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-accent);
   outline-offset: 2px;
 }
@@ -140,5 +277,31 @@ h1 {
   .button {
     transition: none;
     animation: none;
+/* Narrow screens */
+@media (max-width: 400px) {
+  .site-header {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .game {
+    padding: var(--space-3) var(--space-2);
+    gap: var(--space-3);
+  }
+
+  .board {
+    gap: var(--space-1);
+  }
+
+  .button {
+    padding: var(--space-2) var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
   }
 }
