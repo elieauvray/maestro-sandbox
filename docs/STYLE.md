@@ -176,3 +176,53 @@ Added on 2026-11-18 for the isometric 8-bit background (docs/SPEC.md section 9).
 - **Brightness:** the scene stays mostly dark (`--art-space`, `--art-space-2`); bright colors are small accents (shots, explosions, highlights) so the panel stays the focus.
 - **Motion:** obey `prefers-reduced-motion` (one static frame).
 - **Not allowed:** Upsun logo, any image or font file, remote assets, colors outside this file.
+
+## 7. 16-bit space flight palette (change request C2)
+Added on 2026-11-18 for the 16-bit "flying through space" background (docs/SPEC.md section 10). It **extends** section 6: every section 6 token stays. A 16-bit look needs shade ramps (3 to 5 tones per hue), and the brand guide has only one or two tones per hue. The tokens below are therefore **derived shades, not new brand colors**: each one is computed by mixing two existing brand values from sections 1 and 6 in sRGB (per channel: `round(a * (1 - t) + b * t)`). Do not add any other color.
+
+| Token | Value | Mix (a, b, t) | Use in the scene |
+|---|---|---|---|
+| `--art-space-mid` | `#191E21` | Neutral 1000, Neutral 800, 0.5 | Space depth between the two darks, dithering |
+| `--art-violet-dark` | `#1D1A40` | Violet 600, Neutral 1000, 0.8 | Outer nebula and galaxy halo |
+| `--art-violet-deep` | `#2E2570` | Violet 600, Neutral 1000, 0.6 | Galaxy arms (far), planet shadow side |
+| `--art-violet-mid` | `#907EFF` | Violet 600, Violet 300, 0.5 | Galaxy arms (near), planet mid-tone |
+| `--art-blue-deep` | `#075C68` | Blue 600, Neutral 1000, 0.6 | Fleet A hull shadow, planet B shadow |
+| `--art-blue-light` | `#76DFED` | Blue 600, Neutral 100, 0.5 | Fleet A highlights, laser core, star twinkle |
+| `--art-pink-deep` | `#641468` | Pink 600, Neutral 1000, 0.6 | Nebula accents, ring shadow, fleet B shadow |
+| `--art-pink-light` | `#EA85ED` | Pink 600, Neutral 100, 0.5 | Fleet B laser core, ring highlight |
+| `--art-orange-deep` | `#862D11` | Orange 600, Neutral 1000, 0.5 | Fleet B hull shadow, explosion smoke |
+| `--art-orange-light` | `#EAA109` | Orange 600, Lime 600, 0.5 | Explosion mid-flash, engine flames |
+| `--art-lime-light` | `#E1F377` | Lime 600, Neutral 100, 0.5 | Explosion core, cockpit glints |
+
+```css
+:root {
+  /* 16-bit ramps: derived from Upsun brand values only (STYLE.md section 7) */
+  --art-space-mid: #191E21;
+  --art-violet-dark: #1D1A40;
+  --art-violet-deep: #2E2570;
+  --art-violet-mid: #907EFF;
+  --art-blue-deep: #075C68;
+  --art-blue-light: #76DFED;
+  --art-pink-deep: #641468;
+  --art-pink-light: #EA85ED;
+  --art-orange-deep: #862D11;
+  --art-orange-light: #EAA109;
+  --art-lime-light: #E1F377;
+}
+```
+
+### Ramps (dark to light)
+- Space: `--art-space`, `--art-space-mid`, `--art-space-2`
+- Neutral: `--art-space-2`, `--art-dim`, `--art-mid`, `--art-light`
+- Violet: `--art-violet-dark`, `--art-violet-deep`, `--art-violet`, `--art-violet-mid`, `--art-violet-light`
+- Blue: `--art-blue-deep`, `--art-blue`, `--art-blue-light`
+- Pink: `--art-pink-deep`, `--art-pink`, `--art-pink-light`
+- Fire: `--art-orange-deep`, `--art-orange`, `--art-orange-light`, `--art-lime`, `--art-lime-light`
+
+### Rules (replace the 8-bit rules of section 6 for the background)
+- **16-bit pixel art:** internal canvas resolution 480x270 (16:9), `imageSmoothingEnabled = false`, CSS `image-rendering: pixelated`, integer coordinates, flat palette colors only. Shading uses the ramps above (at least 3 tones per object) plus ordered (2x2 or 4x4 Bayer) dithering between neighbouring ramp tones. No gradients, no blur, no alpha blending, no `shadowBlur`.
+- **Sprites:** ships, missiles and planets have a dark outline (`--art-space` or the darkest ramp tone), a light source from the top left (highlight on the top-left, darkest tone bottom-right) and at least 3 ramp tones. Ships are at least 12x8 pixels at full size.
+- **Depth:** far objects use the darker ramp tones, near objects the lighter ones. Fast near stars may be drawn as short streaks (2 to 6 pixels, light to dim).
+- **Retro game UI panel:** the game panel looks like a 16-bit game dialog box: `background: var(--color-bg)`, square corners, a two-tone pixel frame (outer `var(--pixel)` border in `--color-text`, inner 2px line in `--color-accent`, for example with `outline` + `outline-offset` or an inset `box-shadow` with zero blur) and the stepped hard shadow from section 6. Buttons get a stepped shadow that disappears with a 2px shift on `:active` (a "pressed" feel). Fonts, text colors and contrast follow sections 1 to 5 unchanged; no pixel font file may be added.
+- **Brightness:** the scene stays mostly dark; bright tones are small accents, so the panel stays the focus.
+- **Not allowed:** Upsun logo, any image or font file, remote assets, colors outside sections 6 and 7.

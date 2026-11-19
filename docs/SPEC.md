@@ -94,3 +94,26 @@ The project owner asked for a more striking design: an isometric, 8-bit (pixel a
 29. The canvas is `aria-hidden`, ignores pointer events and is not focusable; a full game is still playable with the keyboard. (V6)
 30. With `prefers-reduced-motion: reduce`, the scene is static; the animation pauses when the tab is hidden. (V7)
 31. No horizontal scroll from 320px to 1440px wide, and the canvas resizes with the viewport. (V8)
+
+## 10. 16-bit space flight theme (change request C2, 2026-11-18)
+The project owner asked to move from 8-bit to **16-bit graphics with a retro gaming flavor**, and for the background to give the feeling of **flying forward through space, with galaxies in the background**. This section **replaces V1 (isometric camera) and V2 (8-bit look)** of section 9. V3 to V8 still apply. The space battle (two fleets, lasers, missiles, explosions) stays, redrawn in 16-bit style. Game rules, UI and accessibility (sections 2 to 5) do not change.
+
+- W1. **Forward flight.** The camera flies forward continuously. The scene uses a perspective projection toward a vanishing point near the center of the canvas (`sx = cx + x * f / z`, `sy = cy + y * f / z`, rounded to whole pixels): as an object's depth `z` decreases it moves outward from the vanishing point, grows and gets brighter. Objects that pass the camera (or leave the screen) are recycled far away, so the flight never ends.
+- W2. **Starfield.** At least 3 depth layers of stars. Far stars are single dim pixels; near stars are brighter, larger and, when fast, drawn as short streaks pointing away from the vanishing point. The flight speed is steady (an occasional gentle speed-up "warp" pulse of a few seconds is allowed).
+- W3. **Galaxies in the background.** At least 3 distant galaxies or nebulae (at least one spiral and one elliptical or irregular), drawn with dithered violet/pink/blue ramps. They move and grow much more slowly than the stars (strong parallax), so they read as very far away; they are recycled when they drift off-screen.
+- W4. **Passing bodies.** At least 2 planets (one ringed) and at least 2 moons appear far away, slowly approach, grow and pass beside the camera, then are recycled. They are shaded spheres with an outline, at least 3 ramp tones, a top-left highlight and dithering.
+- W5. **Space battle.** Two opposing fleets of at least 3 ships each fly along with the camera and fight with lasers (beams with a bright core), missiles (with a pixel smoke trail) and multi-frame explosions (flash, expanding debris, fading smoke through the fire ramp). Ships are 16-bit sprites (outline, at least 3 tones, engine flame).
+- W6. **16-bit look.** Internal canvas resolution 480x270, scaled with `image-rendering: pixelated`, only the art palette from docs/STYLE.md sections 6 and 7, ordered dithering allowed, no gradients, blur or alpha.
+- W7. **Retro game UI.** The game panel becomes a 16-bit game dialog box (two-tone pixel frame, stepped shadow) and buttons get a pressed effect, as in docs/STYLE.md section 7. All STYLE.md contrast rules still hold.
+- W8. **Reduced motion and accessibility.** Under `prefers-reduced-motion: reduce`, one static frame is drawn (stars as dots, no streaks, galaxies, at least one planet and both fleets visible) and nothing moves. The canvas is decorative and **not focusable**: `aria-hidden="true"`, `pointer-events: none`, and no `tabindex` attribute.
+- W9. **Pure logic.** Perspective projection, seeded generation, recycling and the simulation stay in `public/js/space-scene.js` (no DOM, no `Math.random`) and are tested in `test/space-scene.test.js`; drawing and the loop stay in `public/js/background.js` (one requestAnimationFrame loop at about 30 fps, paused when the tab is hidden).
+
+### Acceptance checklist additions (C2)
+Lines 24 and 25 are replaced by lines 32 to 34. Lines 26 to 31 still apply.
+32. The background gives a clear feeling of flying forward: stars in at least 3 depth layers stream outward from a vanishing point, near ones as short streaks, and are recycled endlessly. (W1, W2)
+33. At least 3 distant galaxies or nebulae move much more slowly than the stars; at least 2 planets (one ringed) and 2 moons approach and pass by. (W3, W4)
+34. Two fleets of at least 3 ships each fight with lasers, missiles with smoke trails and multi-frame explosions, drawn as 16-bit sprites. (W5)
+35. The canvas renders at 480x270 with `image-rendering: pixelated`, using only colors from STYLE.md sections 6 and 7, with at least 3 shade tones per object and no gradients, blur or alpha. (W6)
+36. The game panel looks like a 16-bit game dialog box (two-tone pixel frame, stepped shadow), buttons have a pressed effect, and STYLE.md contrast still holds. (W7)
+37. Under `prefers-reduced-motion: reduce` the scene is a single static frame; the canvas has `aria-hidden="true"`, `pointer-events: none` and no `tabindex`. (W8)
+38. `test/space-scene.test.js` covers the perspective projection (objects move outward and grow as depth decreases), seeded deterministic generation, recycling of passed objects, and the hit to explosion to expiry lifecycle; `space-scene.js` has no DOM access or `Math.random`. (W9)
